@@ -20,6 +20,7 @@ var PlainLetters = [...]string{
 	"Q",
 	"R",
 	"S",
+	"T",
 	"U",
 	"V",
 	"W",
