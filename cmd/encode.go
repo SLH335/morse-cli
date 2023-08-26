@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	"morse/util"
@@ -47,6 +48,8 @@ func encodeMorse(plainText string) string {
 	plainText = util.FormatPlainText(plainText)
 	plainWords := strings.Split(plainText, " ")
 
+	var invalidLetters []string
+
 	var morseWords []string
 	for _, plainWord := range plainWords {
 		plainWord = strings.TrimSpace(plainWord)
@@ -56,6 +59,11 @@ func encodeMorse(plainText string) string {
 		for _, plainLetter := range plainLetters {
 			morseLetter := encodeMorseLetter(plainLetter)
 
+			// check for invalid letters and add them to slice
+			if morseLetter == "#" && !slices.Contains(invalidLetters, plainLetter) {
+				invalidLetters = append(invalidLetters, plainLetter)
+			}
+
 			morseLetters = append(morseLetters, morseLetter)
 		}
 
@@ -64,6 +72,11 @@ func encodeMorse(plainText string) string {
 	}
 
 	morseText := strings.Join(morseWords, " / ")
+
+	// if invalid letters are found, display message
+	if len(invalidLetters) > 0 {
+		fmt.Fprintf(os.Stderr, "Invalid characters were found: %s; displaying as \"#\"\n\n", strings.Join(invalidLetters, ", "))
+	}
 
 	return morseText
 }
