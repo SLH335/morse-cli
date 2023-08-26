@@ -44,7 +44,7 @@ func init() {
 }
 
 func encodeMorse(plainText string) string {
-	plainText = strings.ToUpper(plainText)
+	plainText = util.FormatPlainText(plainText)
 	plainWords := strings.Split(plainText, " ")
 
 	var morseWords []string
