@@ -76,5 +76,5 @@ func encodeMorseLetter(plainLetter string) string {
 		}
 	}
 
-	return "X"
+	return "#"
 }
