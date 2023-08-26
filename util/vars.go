@@ -9,6 +9,10 @@ func FormatPlainText(text string) string {
 	text = strings.TrimSpace(text)
 	text = strings.ToUpper(text)
 
+	// convert alternative inputs to their standard form
+	text = strings.ReplaceAll(text, "×", "x")
+	text = strings.ReplaceAll(text, "%", "/")
+
 	return text
 }
 
@@ -71,6 +75,21 @@ var PlainLetters = [...]string{
 	"7",
 	"8",
 	"9",
+	"&",
+	"'",
+	"@",
+	")",
+	"(",
+	":",
+	",",
+	"=",
+	"!",
+	".",
+	"-",
+	"+",
+	"\"",
+	"?",
+	"/",
 }
 
 var MorseLetters = [...]string{
@@ -110,4 +129,19 @@ var MorseLetters = [...]string{
 	"--...",
 	"---..",
 	"----.",
+	".-...",
+	".----.",
+	".--.-.",
+	"-.--.-",
+	"-.--.",
+	"---...",
+	"--..--",
+	"-...-",
+	"-.-.--",
+	".-.-.-",
+	"-....-",
+	".-.-.",
+	".-..-.",
+	"..--..",
+	"-..-.",
 }
