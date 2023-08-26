@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"slices"
 	"strings"
 
 	"morse/util"
@@ -24,9 +23,9 @@ var decodeCmd = &cobra.Command{
 		}
 
 		input := strings.Join(args, " ")
-		plainText := decodeMorse(input)
+		output := util.ConvertText(input, false)
 
-		fmt.Println(plainText)
+		fmt.Println(output)
 	},
 }
 
@@ -42,53 +41,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// encodeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-func decodeMorse(morseText string) string {
-	morseText = util.FormatMorseCode(morseText)
-	morseWords := strings.Split(morseText, " / ")
-
-	var invalidLetters []string
-
-	var plainWords []string
-	for _, morseWord := range morseWords {
-		morseWord = strings.TrimSpace(morseWord)
-		morseLetters := strings.Split(morseWord, " ")
-
-		var plainLetters []string
-		for _, morseLetter := range morseLetters {
-			morseLetter = strings.TrimSpace(morseLetter)
-			plainLetter := decodeMorseLetter(morseLetter)
-
-			// check for invalid letters and add them to slice
-			if plainLetter == "#" && !slices.Contains(invalidLetters, morseLetter) {
-				invalidLetters = append(invalidLetters, morseLetter)
-			}
-
-			plainLetters = append(plainLetters, plainLetter)
-		}
-
-		plainWord := strings.Join(plainLetters, "")
-		plainWords = append(plainWords, plainWord)
-	}
-
-	plainText := strings.Join(plainWords, " ")
-
-	// if invalid letters are found, display message
-	if len(invalidLetters) > 0 {
-		fmt.Fprintf(os.Stderr, "Invalid characters were found: %s; displaying as \"#\"\n\n", strings.Join(invalidLetters, ", "))
-	}
-
-	return plainText
-}
-
-func decodeMorseLetter(morseLetter string) string {
-
-	for i, l := range util.MorseLetters {
-		if l == morseLetter {
-			return util.PlainLetters[i]
-		}
-	}
-
-	return "#"
 }
