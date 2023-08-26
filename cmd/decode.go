@@ -46,7 +46,6 @@ func init() {
 func decodeMorse(morseText string) string {
 	morseText = util.FormatMorseCode(morseText)
 	morseWords := strings.Split(morseText, " / ")
-	fmt.Println(morseText)
 
 	var plainWords []string
 	for _, morseWord := range morseWords {
