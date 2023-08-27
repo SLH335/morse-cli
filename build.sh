@@ -71,7 +71,7 @@ main() {
     fi
 
 
-    appname=morse
+    appname=$(go list)
     buildpath=./build
     ldflags="-X main.AppVersion=$RELEASE_VERSION"
 
