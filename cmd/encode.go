@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"os"
 	"strings"
 
@@ -17,12 +19,27 @@ var encodeCmd = &cobra.Command{
 	Short:   "Convert plain text to morse code",
 	Long:    `Convert plain text to morse code`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			fmt.Fprintln(os.Stderr, "Provide at least one argument")
+		var input string
+
+		// read text from stdin if flag is specified
+		if stdin, _ := cmd.Flags().GetBool("stdin"); stdin {
+			buf, err := io.ReadAll(os.Stdin)
+			if err != nil {
+				log.Fatal(err)
+			}
+			input = string(buf)
+		}
+
+		// read text from arguments
+		if input == "" && len(args) > 0 {
+			input = strings.Join(args, " ")
+		}
+
+		if input == "" {
+			fmt.Fprintln(os.Stderr, "No input was specified")
 			return
 		}
 
-		input := strings.Join(args, " ")
 		output := util.ConvertText(input, true)
 
 		fmt.Println(output)
@@ -40,5 +57,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// encodeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	encodeCmd.Flags().BoolP("stdin", "s", false, "Read text from standard input")
 }
