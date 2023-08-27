@@ -139,7 +139,7 @@ func FormatPlainText(text string) string {
 	return text
 }
 
-// format morse code to improve parsing and return
+// format Morse code to improve parsing and return
 func FormatMorseCode(code string) string {
 	code = strings.ReplaceAll(code, "_", "-")
 

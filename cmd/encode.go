@@ -16,8 +16,8 @@ import (
 var encodeCmd = &cobra.Command{
 	Use:     "encode",
 	Aliases: []string{"enc"},
-	Short:   "Convert plain text to morse code",
-	Long:    `Convert plain text to morse code`,
+	Short:   "Convert plain text to Morse code",
+	Long:    `Convert plain text to Morse code`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var input string
 
