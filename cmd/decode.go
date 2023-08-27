@@ -34,14 +34,14 @@ var decodeCmd = &cobra.Command{
 		if fileName, _ := cmd.Flags().GetString("file"); fileName != "" {
 			file, err := os.Open(fileName)
 			if err != nil {
-				fmt.Printf("Failed reading file: %s\n", err)
+				fmt.Fprintf(os.Stderr, "Failed reading file: %s\n", err)
 				return
 			}
 			defer file.Close()
 
 			data, err := io.ReadAll(file)
 			if err != nil {
-				fmt.Printf("Failed reading file: %s\n", err)
+				fmt.Fprintf(os.Stderr, "Failed reading file: %s\n", err)
 				return
 			}
 
@@ -53,6 +53,7 @@ var decodeCmd = &cobra.Command{
 			input = strings.Join(args, " ")
 		}
 
+		// error if no input was supplied
 		if input == "" {
 			fmt.Fprintln(os.Stderr, "No input was specified")
 			return
@@ -60,14 +61,25 @@ var decodeCmd = &cobra.Command{
 
 		output := util.ConvertText(input, false)
 
-		fmt.Println(output)
+		if fileName, _ := cmd.Flags().GetString("output"); fileName != "" {
+			data := []byte(output)
+			err := os.WriteFile(fileName, data, 0644)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Failed writing file: %s\n", err)
+				return
+			}
+		} else {
+			fmt.Println(output)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(decodeCmd)
 
-	decodeCmd.Flags().BoolP("stdin", "s", false, "Read text from standard input")
-	decodeCmd.Flags().StringP("file", "f", "", "Read text from file")
+	decodeCmd.Flags().BoolP("stdin", "s", false, "Read input from standard input")
+	decodeCmd.Flags().StringP("file", "f", "", "Read input from file")
 	decodeCmd.MarkFlagsMutuallyExclusive("stdin", "file")
+
+	decodeCmd.Flags().StringP("output", "o", "", "Write output to file")
 }
