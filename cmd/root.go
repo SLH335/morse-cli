@@ -8,9 +8,10 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "morse",
-	Short: "A tool that can contert text to and from Morse code",
-	Long:  `Morse is a simple CLI tool that can convert text to and from Morse code.`,
+	Use:     "morse",
+	Short:   "A tool that can contert text to and from Morse code",
+	Long:    `Morse is a simple CLI tool that can convert text to and from Morse code.`,
+	Version: "1.0.0",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
