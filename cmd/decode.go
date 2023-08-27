@@ -30,6 +30,24 @@ var decodeCmd = &cobra.Command{
 			input = string(buf)
 		}
 
+		// read text from file if flag is specified
+		if fileName, _ := cmd.Flags().GetString("file"); fileName != "" {
+			file, err := os.Open(fileName)
+			if err != nil {
+				fmt.Printf("Failed reading file: %s\n", err)
+				return
+			}
+			defer file.Close()
+
+			data, err := io.ReadAll(file)
+			if err != nil {
+				fmt.Printf("Failed reading file: %s\n", err)
+				return
+			}
+
+			input = string(data)
+		}
+
 		// read text from arguments
 		if input == "" && len(args) > 0 {
 			input = strings.Join(args, " ")
@@ -49,13 +67,7 @@ var decodeCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(decodeCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// encodeCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	decodeCmd.Flags().BoolP("stdin", "s", false, "Read text from standard input")
+	decodeCmd.Flags().StringP("file", "f", "", "Read text from file")
+	decodeCmd.MarkFlagsMutuallyExclusive("stdin", "file")
 }
