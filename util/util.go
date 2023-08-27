@@ -191,36 +191,45 @@ func ConvertText(input string, isEncoding bool) string {
 		input = FormatMorseCode(input)
 	}
 
-	inputWords := strings.Split(input, inputWordSeparator)
+	inputLines := strings.Split(input, "\n")
 
-	var outputWords []string
-	for _, inputWord := range inputWords {
-		inputWord = strings.TrimSpace(inputWord)
-		inputChars := strings.Split(inputWord, inputCharSeparator)
+	var outputLines []string
+	for _, inputLine := range inputLines {
 
-		var outputChars []string
-		for _, inputChar := range inputChars {
-			inputChar = strings.TrimSpace(inputChar)
-			outputChar := invalidPlaceholder
-			for i, c := range inputCharset {
-				if c == inputChar {
-					outputChar = outputCharset[i]
+		inputWords := strings.Split(inputLine, inputWordSeparator)
+
+		var outputWords []string
+		for _, inputWord := range inputWords {
+			inputWord = strings.TrimSpace(inputWord)
+			inputChars := strings.Split(inputWord, inputCharSeparator)
+
+			var outputChars []string
+			for _, inputChar := range inputChars {
+				inputChar = strings.TrimSpace(inputChar)
+				outputChar := invalidPlaceholder
+				for i, c := range inputCharset {
+					if c == inputChar {
+						outputChar = outputCharset[i]
+					}
 				}
+
+				// check for invalid characters and add them to slice
+				if outputChar == invalidPlaceholder && !slices.Contains(invalidChars, inputChar) {
+					invalidChars = append(invalidChars, inputChar)
+				}
+
+				outputChars = append(outputChars, outputChar)
 			}
 
-			// check for invalid characters and add them to slice
-			if outputChar == invalidPlaceholder && !slices.Contains(invalidChars, inputChar) {
-				invalidChars = append(invalidChars, inputChar)
-			}
-
-			outputChars = append(outputChars, outputChar)
+			outputWord := strings.Join(outputChars, outputCharSeparator)
+			outputWords = append(outputWords, outputWord)
 		}
 
-		outputWord := strings.Join(outputChars, outputCharSeparator)
-		outputWords = append(outputWords, outputWord)
+		outputLine := strings.Join(outputWords, outputWordSeparator)
+		outputLines = append(outputLines, outputLine)
 	}
 
-	outputText := strings.Join(outputWords, outputWordSeparator)
+	outputText := strings.Join(outputLines, "\n")
 
 	// if invalid characters are found, display message
 	if len(invalidChars) > 0 {
